@@ -96,6 +96,10 @@ int Minheap::extractMin() {
     return min;
 }
 
+int Minheap::peek(){
+    return minheap[0];
+}
+
 void Minheap::print(){
     for(int num : minheap){
         cout << num << " ";

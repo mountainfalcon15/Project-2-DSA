@@ -16,6 +16,7 @@ Minheap();
 
 void insert(int val);
 int extractMin();
+int peek();
 
 void print();
 };
