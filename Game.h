@@ -5,10 +5,19 @@
 #ifndef GAME_H
 #define GAME_H
 
-
+#include <string>
+#include <vector>
+using namespace std;
 
 class Game {
-// implement data parsing here
+    string name;
+    float price;
+    string description;
+    vector<string> genres;
+
+public:
+    Game(string name, float price, string description, vector<string> genres);
+
 };
 
 
