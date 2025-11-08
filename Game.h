@@ -17,7 +17,14 @@ class Game {
     vector<string> genres;
 
 public:
+    Game();
+    Game(string id, string name, vector<string> genres);
     Game(string id, string name, float price, string description, vector<string> genres);
+    string getName();
+    float getPrice();
+    string getId();
+    string getDescription();
+    vector<string> getGenres();
 
 };
 
