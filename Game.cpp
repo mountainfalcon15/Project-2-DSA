@@ -9,12 +9,14 @@ Game::Game() {
     this-> price = 0.00;
     this-> description = "";
     this->genres = vector<string>{};
+    this->score = 0;
 }
 
-Game::Game(string id, string name, vector<string> genres) {
+Game::Game(string id, string name, vector<string> genres, float score) {
     this-> id = id;
     this-> name = name;
     this-> genres = genres;
+    this-> score = score;
 }
 
 Game::Game(string id, string name, float price, string description, vector<string> genres) {
@@ -23,6 +25,27 @@ Game::Game(string id, string name, float price, string description, vector<strin
     this->price = price;
     this->description = description;
     this->genres = genres;
+}
+
+Game::Game(string id, string name, float price, string description, vector<string> genres, float score, int pos, int neg) {
+    this-> id = id;
+    this->name = name;
+    this->price = price;
+    this->description = description;
+    this->genres = genres;
+    this->score = score;
+    this->pos = pos;
+    this->neg = neg;
+}
+
+bool Game::operator<(const Game& other) const {
+    return this->score < other.getScore();
+}
+bool Game::operator>(const Game& other) const {
+    return this->score > other.getScore();
+}
+bool Game::operator==(const Game& other) const {
+    return this->score == other.getScore();
 }
 
 string Game::getName() {
@@ -43,4 +66,15 @@ string Game::getDescription() {
 
 vector<string> Game::getGenres() {
     return genres;
+}
+
+float Game::getScore() const{
+    return score;
+}
+
+void Game::display(){
+    cout << "Name: " << name << endl;
+    cout << "Price: " << price << endl;
+    cout << "Description: " << description << endl;
+    cout << "Review Score: " << score*100 << " from " << pos << " positive and " << neg << " negative reviews." << endl;
 }
