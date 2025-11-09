@@ -1,4 +1,13 @@
 <H1> COP3530 - Project 2 </h1>
+
+To run our code:
+- Go to the Kaggle link in the doc, download the dataset as a .json file.
+  	https://www.kaggle.com/datasets/fronkongames/steam-games-dataset
+- Place the .json file at the same level as the other files in Clion.
+- Ensure all the proper files are in your cmakefile.
+- Press the run button at the top of Clion and wait.
+- If you did all these steps correctly, you should see the menu popup!
+
 This is the template for Project 2 repositories. It includes all the assignment instructions and documentation to help you use GitHub.
 
 <h2> Table of Contents </h2>
