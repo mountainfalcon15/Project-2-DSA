@@ -37,52 +37,24 @@ void Minheap::heapify_down(int index){
     //find index of children
     int left_child = 2*index+1;
     int right_child = 2*index+2;
+    int smallest = index;
 
-    //case 1: both children exist
-    if(minheap.size() - 1 >= right_child){
+    if(left_child < minheap.size() && minheap[left_child] < minheap[smallest])
+        smallest = left_child;
+    if(right_child < minheap.size() && minheap[right_child] < minheap[smallest])
+        smallest = right_child;
 
-        //subcase 1: element is larger than children, right is smallest
-        if(minheap[index] > minheap[right_child] && minheap[right_child] < minheap[left_child]){
-            //swap element and right child
-            Game child = minheap[right_child];
-            minheap[right_child] = minheap[index];
-            minheap[index] = child;
-
-            //recursively call heapify_down with new position of element
-            heapify_down(right_child);
-        }
-
-        //subcase 2: element is larger than children, left is smallest
-        if(minheap[index] > minheap[left_child] && minheap[left_child] < minheap[right_child]){
-            //swap element and left child
-            Game child = minheap[left_child];
-            minheap[left_child] = minheap[index];
-            minheap[index] = child;
-
-            //recursively call heapify_down with new position of element
-            heapify_down(left_child);
-        }
-
-        //subcase 3: element is smaller than children, do nothing
+    if(smallest != index){
+        //swap element and left child
+        Game child = minheap[smallest];
+        minheap[smallest] = minheap[index];
+        minheap[index] = child;
+        heapify_down(smallest);
     }
-
-    //case 2: left child exists, no right
-    else if(minheap.size() - 1 <= left_child){
-        //subcase 1: element is smaller than child
-        if(minheap[index] > minheap[left_child]){
-            //swap element and left child
-            Game child = minheap[left_child];
-            minheap[left_child] = minheap[index];
-            minheap[index] = child;
-
-            //recursively call heapify_down with new position of element
-            heapify_down(left_child);
-        }
-    }
-    //case 3: element has reached bottom of heap. do nothing
 }
 
 Game Minheap::extractMin() {
+    if(minheap.empty()) throw runtime_error("Heap is empty");
     //save minimum value to return
     Game min = minheap[0];
 
@@ -91,18 +63,19 @@ Game Minheap::extractMin() {
     //pop the last element, as size has decreased
     minheap.pop_back();
     //recursively heapify down
-    heapify_down(0);
+    if(!minheap.empty()) heapify_down(0);
 
     return min;
 }
 
 Game Minheap::peek(){
-    return minheap[0];
+    if(minheap.size()!= 0) return minheap[0];
+    else throw runtime_error("empty heap");
 }
 
 void Minheap::print(){
     for(Game game : minheap){
         game.display();
+        cout << endl;
     }
-    cout << endl;
 }

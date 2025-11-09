@@ -14,11 +14,11 @@ class Game {
     string id;
     string name;
     float price;
+    string description;
+    vector<string> genres;
     float score;
     int pos;
     int neg;
-    string description;
-    vector<string> genres;
 
 public:
     Game();
@@ -33,6 +33,7 @@ public:
     string getId();
     string getDescription();
     float getScore() const;
+    int getReviewNum();
     vector<string> getGenres();
     void display();
 

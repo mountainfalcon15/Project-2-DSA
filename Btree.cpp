@@ -11,11 +11,11 @@ Btree::Btree(int degree){
     this->t = degree;
 }
 
-void Btree::insert(int val){
+void Btree::insert(Game game){
     //empty root
     if(root == nullptr){
         root = new Node(true, t);
-        root->keys.push_back(val);
+        root->keys.push_back(game);
         return;
     }
     //if root is full, update root, split original
@@ -28,7 +28,7 @@ void Btree::insert(int val){
         root = s;
     }
     //normal insert
-    insertNonFull(root, val);
+    insertNonFull(root, game);
 }
 
 void Btree::splitChild(Node* parent, int i) {
@@ -57,19 +57,19 @@ void Btree::splitChild(Node* parent, int i) {
     parent->keys.insert(parent->keys.begin() + i, y->keys[t - 1]);
 }
 
-void Btree::insertNonFull(Node* node, int key) {
+void Btree::insertNonFull(Node* node, Game game) {
     int i = node->keys.size() - 1;
 
     //check for leaf
     if(node->leaf) {
-        node->keys.push_back(key);
-        while(i >= 0 && node->keys[i] > key) {
+        node->keys.push_back(game);
+        while(i >= 0 && node->keys[i] > game) {
             node->keys[i + 1] = node->keys[i];
             i--;
         }
-        node->keys[i + 1] = key;
+        node->keys[i + 1] = game;
     } else {
-        while(i >= 0 && node->keys[i] > key)
+        while(i >= 0 && node->keys[i] > game)
             i--;
 
         i++;
@@ -77,43 +77,31 @@ void Btree::insertNonFull(Node* node, int key) {
         //check for full node, splits if so
         if(node->children[i]->keys.size() == 2 * t - 1) {
             splitChild(node, i);
-            if(key > node->keys[i])
+            if(game > node->keys[i])
                 i++;
         }
-        insertNonFull(node->children[i], key);
+        insertNonFull(node->children[i], game);
     }
 }
 
-bool Btree::search(int key) {
-    //current node tracker
-    Node* cur = root;
-    while(cur) {
-        int i = 0;
-        //iterate through a node's keys
-        while(i < cur->keys.size() && key > cur->keys[i]) i++;
-        //if key matches value, returns true
-        if(i < cur->keys.size() && cur->keys[i] == key)
-            return true;
-        //if reaches end of tree, returns false
-        if(cur->leaf) return false;
-        //sets value to child
-        cur = cur->children[i];
+//reverse inorder to get highest scores first
+void Btree::reverseInorderTraversal(Node* node, vector<Game>& topGames, int limit) {
+    if (!node || topGames.size() >= limit)
+        return;
+
+    //visit right child first (higher scores)
+    for (int i = node->keys.size(); i >= 0; i--) {
+        if (!node->leaf) reverseInorderTraversal(node->children[i], topGames, limit);
+
+        if (i > 0 && topGames.size() < limit) {
+            topGames.push_back(node->keys[i-1]);
+        }
     }
-    return false;
 }
 
-void Btree::inorderTraversal(Node* node) {
-    //empty check
-    if(!node) return;
-
-    for(size_t i = 0; i < node->keys.size(); i++) {
-        if(!node->leaf) inorderTraversal(node->children[i]);
-        std::cout << node->keys[i] << " ";
-    }
-    if(!node->leaf) inorderTraversal(node->children[node->keys.size()]);
+vector<Game> Btree::getTopGames(int n = 20) {
+    vector<Game> topGames;
+    reverseInorderTraversal(root, topGames, n);
+    return topGames;
 }
 
-void Btree::printSorted() {
-    inorderTraversal(root);
-    std::cout << "\n";
-}

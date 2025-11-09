@@ -72,6 +72,10 @@ float Game::getScore() const{
     return score;
 }
 
+int Game::getReviewNum() {
+    return pos+neg;
+}
+
 void Game::display(){
     cout << "Name: " << name << endl;
     cout << "Price: " << price << endl;

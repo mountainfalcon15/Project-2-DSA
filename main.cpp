@@ -31,9 +31,8 @@ int main(int argc, char* argv[]) {
     // Data structures that will be used
     Minheap MH;
     Btree BT(3);
-    vector<string> GameGenre;
     set<string> genres;
-    vector<int> IDS;
+    vector<string> IDS;
     map<string, Game> GameSearch;
 
     int incrementer = 0;
@@ -43,11 +42,13 @@ int main(int argc, char* argv[]) {
     for (auto& member : data.GetObject()) {
         cout << "processing game " << incrementer << endl;
         string id = member.name.GetString();
+        IDS.push_back(id);
         const auto& obj = member.value;
         string name = obj["name"].GetString();
         float price = obj["price"].GetFloat();
         string description = obj["short_description"].GetString();
         // Append genres to Set
+        vector<string> GameGenre;
         for (int i=0 ; i < obj["genres"].Size(); i++) {
             GameGenre.push_back(obj["genres"][i].GetString());
             genres.insert(obj["genres"][i].GetString());
@@ -79,8 +80,9 @@ int main(int argc, char* argv[]) {
                 << "Welcome to the Steamler! This is a program that helps you pick out games for you based on the genre(s) you select!"
                 << std::endl;
         cout << "1. See all genres" << endl;
-        cout << "2. Enter genres to search" << endl;
-        cout << "3. Exit" << endl;
+        cout << "2. Enter genres to search via MinHeap" << endl;
+        cout << "3. Enter genres to search via BTree" << endl;
+        cout << "4. Exit" << endl;
         cout << "------------------------------" << endl;
         cout << "Please enter a number to begin: ";
         cin >> input;
@@ -90,8 +92,9 @@ int main(int argc, char* argv[]) {
             }
             cout << endl;
         }
-        if (input == "2") {
-            cout << "Separate genres using commas (ie. Action, Single-Player)" << endl;
+        if (input == "2" || input == "3") {
+            string dataset = input; //saving input
+            cout << "Separate genres using commas (ie. Action, Single-Player), case sensitive" << endl;
             cout << "Enter genres here: " << endl;
 
             //get genres specified
@@ -118,30 +121,47 @@ int main(int argc, char* argv[]) {
 
             // IMPLEMENT SORTS/ALGOS HERE TO FIND GAMES AND COMPARE TIMES(SHOW RESULTS)
             Minheap minheap;
-            for(int ID : IDS){
-                int size = 0;
-                Game game = GameSearch[to_string(ID)];
+            Btree btree(3);
+            int size = 0;
+            for(string ID : IDS){
+                Game game = GameSearch[ID];
 
                 //check for a genre match
                 bool match = true;
                 vector<string> game_genres = game.getGenres();
                 for(string genre : genres){
                     auto it = find(game_genres.begin(),game_genres.end(), genre);
-                    if(it == game_genres.end()) match = false;
+                    if(it == game_genres.end()){
+                        match = false;
+                        break;
+                    }
                 }
-                if(match = true){
-                    minheap.insert(game);
-                    size+=1;
+                if(match == true && game.getReviewNum() > 100){ //cutoff to ensure games with few pos & 0 negative don't clog results
+                    if(dataset == "2") {
+                        minheap.insert(game);
+                        size +=1;
+                    }
+                    else btree.insert(game);
                     //control size of minheap
                     if(size > 20){
                         minheap.extractMin();
                     }
                 }
             }
-            cout << "The top 20 " << input << " games:" << endl;
-            minheap.print();
+            cout << "Top games in categories: " << endl;
+            for(int i = 0; i < genres.size() - 1; i++){
+                cout << genres[i] << ", ";
+            } cout << genres[genres.size()-1] << endl;
+            if(dataset == "2") minheap.print();
+            else {
+                vector<Game> top = btree.getTopGames(20);
+                for(auto& g : top){
+                    g.display();
+                    cout << endl;
+                }
+            }
         }
-        if (input == "3") {
+        if (input == "4"){
             return 0;
         }
 

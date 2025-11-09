@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include "Game.h"
 using namespace std;
 
 #ifndef BTREE_H
@@ -8,7 +9,7 @@ using namespace std;
 struct Node
 {
     bool leaf;
-    vector<int> keys;
+    vector<Game> keys;
     vector<Node*> children;
     int t;
 
@@ -21,16 +22,15 @@ class Btree
     int t;
 
     void splitChild(Node* parent, int i);
-    void insertNonFull(Node* node, int key);
+    void insertNonFull(Node* node, Game g);
 
 public:
     Btree(int degree);
 
-    void insert(int val);
-    bool search(int key);
+    void insert(Game g);
 
-    void inorderTraversal(Node* node);
-    void printSorted();
+    void reverseInorderTraversal(Node* node,vector<Game>& topGames, int limit);
+    vector<Game> getTopGames(int n);
 
 };
 
