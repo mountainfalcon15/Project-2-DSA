@@ -40,7 +40,6 @@ int main(int argc, char* argv[]) {
     // Goes through Document object and its members
     // Create Game objects from the data
     for (auto& member : data.GetObject()) {
-        cout << "processing game " << incrementer << endl;
         string id = member.name.GetString();
         IDS.push_back(id);
         const auto& obj = member.value;
@@ -66,7 +65,7 @@ int main(int argc, char* argv[]) {
         GameSearch[id] = game;
         //MH.insert(game);
         //BT.insert(game);
-        if (incrementer > 2000) {
+        if (incrementer > 10000) {
             break;
         }
         incrementer++;
@@ -85,7 +84,7 @@ int main(int argc, char* argv[]) {
         cout << "4. Exit" << endl;
         cout << "------------------------------" << endl;
         cout << "Please enter a number to begin: ";
-        cin >> input;
+        getline(cin,input);
         if (input == "1") {
             for (auto genre: genres) {
                 cout << genre << ", ";
@@ -98,7 +97,6 @@ int main(int argc, char* argv[]) {
             cout << "Enter genres here: " << endl;
 
             //get genres specified
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             getline(cin, input);
             vector<string> genres;
             string temp = "";
@@ -136,7 +134,7 @@ int main(int argc, char* argv[]) {
                         break;
                     }
                 }
-                if(match == true && game.getReviewNum() > 100){ //cutoff to ensure games with few pos & 0 negative don't clog results
+                if(match == true && game.getReviewNum() > 200){ //cutoff to ensure games with few pos & 0 negative don't clog results
                     if(dataset == "2") {
                         minheap.insert(game);
                         size +=1;
@@ -162,7 +160,7 @@ int main(int argc, char* argv[]) {
             }
         }
         if (input == "4"){
-            return 0;
+            break;
         }
 
 
